@@ -49,17 +49,17 @@ function getMetrics(bodyShape: BodyShape): ShapeMetrics {
 
 interface EyeProps {
   cx: number; cy: number; eyeStyle: BirdTraits['eyeStyle'];
-  eyeColor: string; headColor: string;
+  eyeColour: string; headColor: string;
 }
 
-function Eye({ cx, cy, eyeStyle, eyeColor, headColor }: EyeProps) {
+function Eye({ cx, cy, eyeStyle, eyeColour, headColor }: EyeProps) {
   const outerR = eyeStyle === 'wide' ? 11 : 9;
   const irisR = eyeStyle === 'wide' ? 7.5 : 6;
   const pupilR = eyeStyle === 'wide' ? 5 : 3.5;
   return (
     <G>
       <Circle cx={cx} cy={cy} r={outerR} fill="white" />
-      <Circle cx={cx} cy={cy} r={irisR} fill={eyeColor} />
+      <Circle cx={cx} cy={cy} r={irisR} fill={eyeColour} />
       <Circle cx={cx} cy={cy} r={pupilR} fill="#1a1a1a" />
       <Circle cx={cx + 2.5} cy={cy - 2.5} r={1.8} fill="white" />
       {eyeStyle === 'sleepy' && (
@@ -74,10 +74,10 @@ function Eye({ cx, cy, eyeStyle, eyeColor, headColor }: EyeProps) {
 
 interface CrestProps {
   m: ShapeMetrics; crestStyle: BirdTraits['crestStyle'];
-  bodyColor: string; wingColor: string;
+  bodyColour: string; wingColour: string;
 }
 
-function Crest({ m, crestStyle, bodyColor, wingColor }: CrestProps) {
+function Crest({ m, crestStyle, bodyColour, wingColour }: CrestProps) {
   const baseY = m.crestBaseY;
   const cx = m.headCx;
   if (crestStyle === 'none') return null;
@@ -85,16 +85,16 @@ function Crest({ m, crestStyle, bodyColor, wingColor }: CrestProps) {
     return (
       <Ellipse
         cx={cx} cy={baseY} rx={5} ry={14}
-        fill={wingColor} rotation={0} originX={cx} originY={baseY}
+        fill={wingColour} rotation={0} originX={cx} originY={baseY}
       />
     );
   }
   if (crestStyle === 'large') {
     return (
       <G>
-        <Ellipse cx={cx - 14} cy={baseY + 6} rx={4} ry={12} fill={wingColor} rotation={-20} originX={cx - 14} originY={baseY + 6} />
-        <Ellipse cx={cx} cy={baseY} rx={5} ry={14} fill={wingColor} />
-        <Ellipse cx={cx + 14} cy={baseY + 6} rx={4} ry={12} fill={wingColor} rotation={20} originX={cx + 14} originY={baseY + 6} />
+        <Ellipse cx={cx - 14} cy={baseY + 6} rx={4} ry={12} fill={wingColour} rotation={-20} originX={cx - 14} originY={baseY + 6} />
+        <Ellipse cx={cx} cy={baseY} rx={5} ry={14} fill={wingColour} />
+        <Ellipse cx={cx + 14} cy={baseY + 6} rx={4} ry={12} fill={wingColour} rotation={20} originX={cx + 14} originY={baseY + 6} />
       </G>
     );
   }
@@ -102,31 +102,31 @@ function Crest({ m, crestStyle, bodyColor, wingColor }: CrestProps) {
   return (
     <Path
       d={`M ${cx},${baseY + 5} C ${cx + 5},${baseY - 5} ${cx + 18},${baseY - 12} ${cx + 14},${baseY - 22} C ${cx + 10},${baseY - 32} ${cx - 2},${baseY - 28} ${cx},${baseY + 2}`}
-      fill={wingColor}
+      fill={wingColour}
     />
   );
 }
 
 interface TailProps {
   m: ShapeMetrics; tailStyle: BirdTraits['tailStyle'];
-  wingColor: string;
+  wingColour: string;
 }
 
-function Tail({ m, tailStyle, wingColor }: TailProps) {
+function Tail({ m, tailStyle, wingColour }: TailProps) {
   const y = m.tailY;
   const cx = m.bodyCx;
   if (tailStyle === 'short') {
-    return <Polygon points={`${cx - 12},${y} ${cx},${y + 16} ${cx + 12},${y}`} fill={wingColor} />;
+    return <Polygon points={`${cx - 12},${y} ${cx},${y + 16} ${cx + 12},${y}`} fill={wingColour} />;
   }
   if (tailStyle === 'long') {
-    return <Polygon points={`${cx - 14},${y} ${cx},${y + 28} ${cx + 14},${y}`} fill={wingColor} />;
+    return <Polygon points={`${cx - 14},${y} ${cx},${y + 28} ${cx + 14},${y}`} fill={wingColour} />;
   }
   if (tailStyle === 'fan') {
     return (
       <G>
-        <Polygon points={`${cx - 22},${y + 2} ${cx - 8},${y + 22} ${cx},${y}`} fill={wingColor} />
-        <Polygon points={`${cx - 10},${y} ${cx},${y + 24} ${cx + 10},${y}`} fill={wingColor} />
-        <Polygon points={`${cx},${y} ${cx + 8},${y + 22} ${cx + 22},${y + 2}`} fill={wingColor} />
+        <Polygon points={`${cx - 22},${y + 2} ${cx - 8},${y + 22} ${cx},${y}`} fill={wingColour} />
+        <Polygon points={`${cx - 10},${y} ${cx},${y + 24} ${cx + 10},${y}`} fill={wingColour} />
+        <Polygon points={`${cx},${y} ${cx + 8},${y + 22} ${cx + 22},${y + 2}`} fill={wingColour} />
       </G>
     );
   }
@@ -134,7 +134,7 @@ function Tail({ m, tailStyle, wingColor }: TailProps) {
   return (
     <Polygon
       points={`${cx - 14},${y} ${cx - 6},${y + 22} ${cx},${y + 8} ${cx + 6},${y + 22} ${cx + 14},${y}`}
-      fill={wingColor}
+      fill={wingColour}
     />
   );
 }
@@ -166,13 +166,13 @@ export default function BirdSvg({ traits, equippedHat, equippedAccessory, health
     <View style={{ width: size, height }}>
       <Svg width={size} height={height} viewBox="0 0 160 200">
         {/* Tail behind body */}
-        <Tail m={m} tailStyle={traits.tailStyle} wingColor={traits.wingColor} />
+        <Tail m={m} tailStyle={traits.tailStyle} wingColour={traits.wingColour} />
 
         {/* Wings behind body */}
         <Ellipse
           cx={m.bodyCx - m.bodyRx + 5} cy={m.bodyCy - 5}
           rx={18} ry={32}
-          fill={traits.wingColor}
+          fill={traits.wingColour}
           rotation={-22}
           originX={m.bodyCx - m.bodyRx + 5}
           originY={m.bodyCy - 5}
@@ -180,7 +180,7 @@ export default function BirdSvg({ traits, equippedHat, equippedAccessory, health
         <Ellipse
           cx={m.bodyCx + m.bodyRx - 5} cy={m.bodyCy - 5}
           rx={18} ry={32}
-          fill={traits.wingColor}
+          fill={traits.wingColour}
           rotation={22}
           originX={m.bodyCx + m.bodyRx - 5}
           originY={m.bodyCy - 5}
@@ -190,39 +190,39 @@ export default function BirdSvg({ traits, equippedHat, equippedAccessory, health
         <Ellipse
           cx={m.bodyCx} cy={m.bodyCy}
           rx={m.bodyRx} ry={m.bodyRy}
-          fill={traits.bodyColor}
+          fill={traits.bodyColour}
         />
 
         {/* Belly */}
         <Ellipse
           cx={m.bellyCx} cy={m.bellyCy}
           rx={m.bellyRx} ry={m.bellyRy}
-          fill={traits.bellyColor}
+          fill={traits.bellyColour}
         />
 
         {/* Head */}
-        <Circle cx={m.headCx} cy={m.headCy} r={m.headR} fill={traits.bodyColor} />
+        <Circle cx={m.headCx} cy={m.headCy} r={m.headR} fill={traits.bodyColour} />
 
         {/* Crest on top of head */}
-        <Crest m={m} crestStyle={traits.crestStyle} bodyColor={traits.bodyColor} wingColor={traits.wingColor} />
+        <Crest m={m} crestStyle={traits.crestStyle} bodyColour={traits.bodyColour} wingColour={traits.wingColour} />
 
         {/* Beak */}
         <Polygon
           points={`${m.headCx - m.beakHW},${m.beakY} ${m.headCx + m.beakHW},${m.beakY} ${m.headCx},${m.beakTipY}`}
-          fill={traits.beakColor}
+          fill={traits.beakColour}
         />
 
         {/* Eyes */}
-        <Eye cx={m.eyeLX} cy={m.eyeY} eyeStyle={traits.eyeStyle} eyeColor={traits.eyeColor} headColor={traits.bodyColor} />
-        <Eye cx={m.eyeRX} cy={m.eyeY} eyeStyle={traits.eyeStyle} eyeColor={traits.eyeColor} headColor={traits.bodyColor} />
+        <Eye cx={m.eyeLX} cy={m.eyeY} eyeStyle={traits.eyeStyle} eyeColour={traits.eyeColour} headColor={traits.bodyColour} />
+        <Eye cx={m.eyeRX} cy={m.eyeY} eyeStyle={traits.eyeStyle} eyeColour={traits.eyeColour} headColor={traits.bodyColour} />
 
         {/* Feet */}
-        <Line x1={m.bodyCx - 16} y1={m.footY} x2={m.bodyCx - 23} y2={m.footY + 14} stroke={traits.beakColor} strokeWidth={3} strokeLinecap="round" />
-        <Line x1={m.bodyCx - 16} y1={m.footY} x2={m.bodyCx - 16} y2={m.footY + 16} stroke={traits.beakColor} strokeWidth={3} strokeLinecap="round" />
-        <Line x1={m.bodyCx - 16} y1={m.footY} x2={m.bodyCx - 9} y2={m.footY + 14} stroke={traits.beakColor} strokeWidth={3} strokeLinecap="round" />
-        <Line x1={m.bodyCx + 16} y1={m.footY} x2={m.bodyCx + 9} y2={m.footY + 14} stroke={traits.beakColor} strokeWidth={3} strokeLinecap="round" />
-        <Line x1={m.bodyCx + 16} y1={m.footY} x2={m.bodyCx + 16} y2={m.footY + 16} stroke={traits.beakColor} strokeWidth={3} strokeLinecap="round" />
-        <Line x1={m.bodyCx + 16} y1={m.footY} x2={m.bodyCx + 23} y2={m.footY + 14} stroke={traits.beakColor} strokeWidth={3} strokeLinecap="round" />
+        <Line x1={m.bodyCx - 16} y1={m.footY} x2={m.bodyCx - 23} y2={m.footY + 14} stroke={traits.beakColour} strokeWidth={3} strokeLinecap="round" />
+        <Line x1={m.bodyCx - 16} y1={m.footY} x2={m.bodyCx - 16} y2={m.footY + 16} stroke={traits.beakColour} strokeWidth={3} strokeLinecap="round" />
+        <Line x1={m.bodyCx - 16} y1={m.footY} x2={m.bodyCx - 9} y2={m.footY + 14} stroke={traits.beakColour} strokeWidth={3} strokeLinecap="round" />
+        <Line x1={m.bodyCx + 16} y1={m.footY} x2={m.bodyCx + 9} y2={m.footY + 14} stroke={traits.beakColour} strokeWidth={3} strokeLinecap="round" />
+        <Line x1={m.bodyCx + 16} y1={m.footY} x2={m.bodyCx + 16} y2={m.footY + 16} stroke={traits.beakColour} strokeWidth={3} strokeLinecap="round" />
+        <Line x1={m.bodyCx + 16} y1={m.footY} x2={m.bodyCx + 23} y2={m.footY + 14} stroke={traits.beakColour} strokeWidth={3} strokeLinecap="round" />
 
         {/* Health grey overlay */}
         {greyOpacity > 0 && (

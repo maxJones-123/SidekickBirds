@@ -91,17 +91,17 @@ function RenameModal({ visible, currentName, onSave, onClose }: RenameModalProps
   );
 }
 
-// ─── Recolor Modal ───────────────────────────────────────────────────────────
+// ─── Recolour Modal ───────────────────────────────────────────────────────────
 
-interface RecolorModalProps {
+interface RecolourModalProps {
   visible: boolean;
   med: Medication;
   coins: number;
-  onApply: (colors: { bodyColor: string; wingColor: string; bellyColor: string; beakColor: string; eyeColor: string }, cost: number) => void;
+  onApply: (colours: { bodyColour: string; wingColour: string; bellyColour: string; beakColour: string; eyeColour: string }, cost: number) => void;
   onClose: () => void;
 }
 
-function RecolorModal({ visible, med, coins, onApply, onClose }: RecolorModalProps) {
+function RecolourModal({ visible, med, coins, onApply, onClose }: RecolourModalProps) {
   const [selected, setSelected] = useState<BirdPalette | 'random' | null>(null);
 
   const previewTraits: BirdTraits = selected && selected !== 'random'
@@ -119,19 +119,19 @@ function RecolorModal({ visible, med, coins, onApply, onClose }: RecolorModalPro
     }
     if (selected === 'random') {
       onApply({
-        bodyColor: randomPick(BODY_COLORS),
-        wingColor: randomPick(WING_COLORS),
-        bellyColor: randomPick(BELLY_COLORS),
-        beakColor: randomPick(BEAK_COLORS),
-        eyeColor: randomPick(EYE_COLORS),
+        bodyColour: randomPick(BODY_COLORS),
+        wingColour: randomPick(WING_COLORS),
+        bellyColour: randomPick(BELLY_COLORS),
+        beakColour: randomPick(BEAK_COLORS),
+        eyeColour: randomPick(EYE_COLORS),
       }, RANDOM_RECOLOR_COST);
     } else {
       onApply({
-        bodyColor: selected.bodyColor,
-        wingColor: selected.wingColor,
-        bellyColor: selected.bellyColor,
-        beakColor: selected.beakColor,
-        eyeColor: selected.eyeColor,
+        bodyColour: selected.bodyColour,
+        wingColour: selected.wingColour,
+        bellyColour: selected.bellyColour,
+        beakColour: selected.beakColour,
+        eyeColour: selected.eyeColour,
       }, selected.cost);
     }
   };
@@ -143,18 +143,18 @@ function RecolorModal({ visible, med, coins, onApply, onClose }: RecolorModalPro
       animationType="slide"
       onRequestClose={onClose}
     >
-      <View style={recolorStyles.backdrop}>
-        <View style={recolorStyles.sheet}>
+      <View style={recolourStyles.backdrop}>
+        <View style={recolourStyles.sheet}>
           {/* Header */}
-          <View style={recolorStyles.header}>
-            <Text style={recolorStyles.title}>Recolor Bird</Text>
-            <TouchableOpacity onPress={onClose} activeOpacity={0.7} style={recolorStyles.closeBtn}>
-              <Text style={recolorStyles.closeBtnText}>✕</Text>
+          <View style={recolourStyles.header}>
+            <Text style={recolourStyles.title}>Recolour Bird</Text>
+            <TouchableOpacity onPress={onClose} activeOpacity={0.7} style={recolourStyles.closeBtn}>
+              <Text style={recolourStyles.closeBtnText}>✕</Text>
             </TouchableOpacity>
           </View>
 
           {/* Live preview */}
-          <View style={recolorStyles.preview}>
+          <View style={recolourStyles.preview}>
             <BirdSvg
               traits={previewTraits}
               equippedHat={med.equippedHat}
@@ -162,48 +162,48 @@ function RecolorModal({ visible, med, coins, onApply, onClose }: RecolorModalPro
               health={med.health}
               size={100}
             />
-            <View style={recolorStyles.previewInfo}>
-              <Text style={recolorStyles.previewName}>{med.birdTraits.name}</Text>
+            <View style={recolourStyles.previewInfo}>
+              <Text style={recolourStyles.previewName}>{med.birdTraits.name}</Text>
               {selected ? (
-                <View style={recolorStyles.costBadge}>
-                  <Text style={recolorStyles.costText}>
+                <View style={recolourStyles.costBadge}>
+                  <Text style={recolourStyles.costText}>
                     🪙 {cost} {canAfford ? '' : `(need ${cost - coins} more)`}
                   </Text>
                 </View>
               ) : (
-                <Text style={recolorStyles.previewHint}>Tap a colour to preview</Text>
+                <Text style={recolourStyles.previewHint}>Tap a colour to preview</Text>
               )}
             </View>
           </View>
 
           {/* Random option */}
           <TouchableOpacity
-            style={[recolorStyles.randomBtn, selected === 'random' && recolorStyles.randomBtnSelected]}
+            style={[recolourStyles.randomBtn, selected === 'random' && recolourStyles.randomBtnSelected]}
             onPress={() => setSelected('random')}
             activeOpacity={0.8}
           >
-            <Text style={recolorStyles.randomBtnText}>✨ Random Recolor — 🪙 {RANDOM_RECOLOR_COST} pts</Text>
+            <Text style={recolourStyles.randomBtnText}>✨ Random Recolour — 🪙 {RANDOM_RECOLOR_COST} pts</Text>
           </TouchableOpacity>
 
           {/* Palette grid */}
-          <Text style={recolorStyles.sectionLabel}>PRESETS — 🪙 {BIRD_PALETTES[0].cost} pts each</Text>
+          <Text style={recolourStyles.sectionLabel}>PRESETS — 🪙 {BIRD_PALETTES[0].cost} pts each</Text>
           <FlatList
             data={BIRD_PALETTES}
             keyExtractor={p => p.id}
             numColumns={5}
             scrollEnabled={false}
-            contentContainerStyle={recolorStyles.paletteGrid}
+            contentContainerStyle={recolourStyles.paletteGrid}
             renderItem={({ item }) => {
               const isSelected = selected !== 'random' && selected?.id === item.id;
               return (
                 <TouchableOpacity
-                  style={[recolorStyles.swatch, isSelected && recolorStyles.swatchSelected]}
+                  style={[recolourStyles.swatch, isSelected && recolourStyles.swatchSelected]}
                   onPress={() => setSelected(item)}
                   activeOpacity={0.8}
                 >
-                  <View style={[recolorStyles.swatchBody, { backgroundColor: item.bodyColor }]} />
-                  <View style={[recolorStyles.swatchBelly, { backgroundColor: item.bellyColor }]} />
-                  <Text style={recolorStyles.swatchName}>{item.name}</Text>
+                  <View style={[recolourStyles.swatchBody, { backgroundColor: item.bodyColour }]} />
+                  <View style={[recolourStyles.swatchBelly, { backgroundColor: item.bellyColour }]} />
+                  <Text style={recolourStyles.swatchName}>{item.name}</Text>
                 </TouchableOpacity>
               );
             }}
@@ -211,12 +211,12 @@ function RecolorModal({ visible, med, coins, onApply, onClose }: RecolorModalPro
 
           {/* Apply button */}
           <TouchableOpacity
-            style={[recolorStyles.applyBtn, (!selected || !canAfford) && recolorStyles.applyBtnDisabled]}
+            style={[recolourStyles.applyBtn, (!selected || !canAfford) && recolourStyles.applyBtnDisabled]}
             onPress={handleApply}
             disabled={!selected}
             activeOpacity={0.85}
           >
-            <Text style={recolorStyles.applyBtnText}>
+            <Text style={recolourStyles.applyBtnText}>
               {selected ? `Apply — 🪙 ${cost} pts` : 'Select a colour'}
             </Text>
           </TouchableOpacity>
@@ -244,8 +244,8 @@ function BirdRoom({ med, coins, totalXp, onEditName }: BirdRoomProps) {
 
   return (
     <View style={[styles.roomPage, { width: SCREEN_WIDTH }]}>
-      <View style={[styles.room, { backgroundColor: bg.wallColor }]}>
-        <View style={[styles.roomFloor, { backgroundColor: bg.floorColor }]} />
+      <View style={[styles.room, { backgroundColor: bg.wallColour }]}>
+        <View style={[styles.roomFloor, { backgroundColor: bg.floorColour }]} />
         {decos.slice(0, 6).map((id, i) => {
           const deco = getDecorationById(id);
           if (!deco) return null;
@@ -292,11 +292,11 @@ function BirdRoom({ med, coins, totalXp, onEditName }: BirdRoomProps) {
 
 export default function AvatarScreen() {
   const navigation = useNavigation<Nav>();
-  const { state, renameBird, recolorBird } = useApp();
+  const { state, renameBird, recolourBird } = useApp();
   const [activePage, setActivePage] = useState(0);
   const scrollRef = useRef<ScrollView>(null);
   const [renameVisible, setRenameVisible] = useState(false);
-  const [recolorVisible, setRecolorVisible] = useState(false);
+  const [recolourVisible, setRecolourVisible] = useState(false);
 
   const activeMed = state.medications[activePage] ?? null;
 
@@ -312,18 +312,18 @@ export default function AvatarScreen() {
     Haptics.notificationAsync(Haptics.NotificationFeedbackType.Success);
   }, [activeMed, renameBird]);
 
-  const handleRecolor = useCallback(
-    (colors: { bodyColor: string; wingColor: string; bellyColor: string; beakColor: string; eyeColor: string }, cost: number) => {
+  const handleRecolour = useCallback(
+    (colours: { bodyColour: string; wingColour: string; bellyColour: string; beakColour: string; eyeColour: string }, cost: number) => {
       if (!activeMed) return;
-      const ok = recolorBird(activeMed.id, colors, cost);
+      const ok = recolourBird(activeMed.id, colours, cost);
       if (ok) {
-        setRecolorVisible(false);
+        setRecolourVisible(false);
         Haptics.notificationAsync(Haptics.NotificationFeedbackType.Success);
       } else {
-        Alert.alert('Not enough coins', `You need more coins to recolor.`);
+        Alert.alert('Not enough coins', `You need more coins to recolour.`);
       }
     },
-    [activeMed, recolorBird]
+    [activeMed, recolourBird]
   );
 
   if (state.medications.length === 0) {
@@ -386,12 +386,12 @@ export default function AvatarScreen() {
 
         <TouchableOpacity
           style={styles.actionBtn}
-          onPress={() => setRecolorVisible(true)}
+          onPress={() => setRecolourVisible(true)}
           activeOpacity={0.85}
         >
           <Text style={styles.actionBtnIcon}>🎨</Text>
           <View style={styles.actionBtnTextGroup}>
-            <Text style={styles.actionBtnLabel}>Recolor Bird</Text>
+            <Text style={styles.actionBtnLabel}>Recolour Bird</Text>
             <Text style={styles.actionBtnSub}>Presets 🪙 50 · Random 🪙 30</Text>
           </View>
           <Text style={styles.actionBtnChevron}>›</Text>
@@ -399,12 +399,12 @@ export default function AvatarScreen() {
 
         <TouchableOpacity
           style={styles.actionBtn}
-          onPress={() => activeMed && navigation.navigate('CustomizeHome', { medicationId: activeMed.id })}
+          onPress={() => activeMed && navigation.navigate('CustomiseHome', { medicationId: activeMed.id })}
           activeOpacity={0.85}
         >
           <Text style={styles.actionBtnIcon}>🏠</Text>
           <View style={styles.actionBtnTextGroup}>
-            <Text style={styles.actionBtnLabel}>Customize Home</Text>
+            <Text style={styles.actionBtnLabel}>Customise Home</Text>
             <Text style={styles.actionBtnSub}>Backgrounds & Items</Text>
           </View>
           <Text style={styles.actionBtnChevron}>›</Text>
@@ -421,14 +421,14 @@ export default function AvatarScreen() {
         />
       )}
 
-      {/* Recolor modal */}
+      {/* Recolour modal */}
       {activeMed && (
-        <RecolorModal
-          visible={recolorVisible}
+        <RecolourModal
+          visible={recolourVisible}
           med={activeMed}
           coins={state.coins}
-          onApply={handleRecolor}
-          onClose={() => setRecolorVisible(false)}
+          onApply={handleRecolour}
+          onClose={() => setRecolourVisible(false)}
         />
       )}
     </SafeAreaView>
@@ -522,7 +522,7 @@ const modalStyles = StyleSheet.create({
   saveBtnText: { fontSize: 15, fontWeight: '700', color: '#fff' },
 });
 
-const recolorStyles = StyleSheet.create({
+const recolourStyles = StyleSheet.create({
   backdrop: {
     flex: 1, backgroundColor: 'rgba(0,0,0,0.45)',
     justifyContent: 'flex-end',

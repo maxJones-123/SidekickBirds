@@ -6,11 +6,11 @@ export type CosmeticType = 'hat' | 'accessory';
 export type Frequency = 'Once Daily' | 'Twice Daily' | '3x Daily' | '4x Daily' | 'As Needed' | 'Weekly';
 
 export interface BirdTraits {
-  bodyColor: string;
-  bellyColor: string;
-  wingColor: string;
-  beakColor: string;
-  eyeColor: string;
+  bodyColour: string;
+  bellyColour: string;
+  wingColour: string;
+  beakColour: string;
+  eyeColour: string;
   bodyShape: BodyShape;
   crestStyle: CrestStyle;
   tailStyle: TailStyle;
@@ -92,7 +92,7 @@ export type RootStackParamList = {
   HowItWorks: undefined;
   BirdDetail: { medicationId: string };
   Shop: { medicationId: string };
-  CustomizeHome: { medicationId: string };
+  CustomiseHome: { medicationId: string };
 };
 
 export type MainTabParamList = {

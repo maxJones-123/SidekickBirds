@@ -14,7 +14,7 @@ import TakeSuccessScreen from '../screens/TakeSuccessScreen';
 import HowItWorksScreen from '../screens/HowItWorksScreen';
 import BirdDetailScreen from '../screens/BirdDetailScreen';
 import ShopScreen from '../screens/ShopScreen';
-import CustomizeHomeScreen from '../screens/CustomizeHomeScreen';
+import CustomiseHomeScreen from '../screens/CustomiseHomeScreen';
 import ManageMedicationsScreen from '../screens/ManageMedicationsScreen';
 
 const Stack = createNativeStackNavigator<RootStackParamList>();
@@ -121,8 +121,8 @@ export default function AppNavigator() {
           options={{ title: 'Cosmetics Shop' }}
         />
         <Stack.Screen
-          name="CustomizeHome"
-          component={CustomizeHomeScreen}
+          name="CustomiseHome"
+          component={CustomiseHomeScreen}
           options={{ title: 'Customize Home' }}
         />
         <Stack.Screen

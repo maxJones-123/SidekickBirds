@@ -25,7 +25,7 @@ interface AppContextValue {
   toggleRoomDecoration: (medicationId: string, decorationId: string) => void;
   buyHomeItem: (itemId: string, cost: number) => boolean;
   renameBird: (medicationId: string, newName: string) => void;
-  recolorBird: (medicationId: string, colors: { bodyColor: string; wingColor: string; bellyColor: string; beakColor: string; eyeColor: string }, cost: number) => boolean;
+  recolourBird: (medicationId: string, colours: { bodyColour: string; wingColour: string; bellyColour: string; beakColour: string; eyeColour: string }, cost: number) => boolean;
   reorderMedications: (ids: string[]) => void;
   setRepeatSettings: (medicationId: string, enabled: boolean, days: number, phone: string) => void;
   markRepeatRequested: (medicationId: string) => void;
@@ -365,15 +365,15 @@ export function AppProvider({ children }: { children: React.ReactNode }) {
     });
   }, [state.medications]);
 
-  const recolorBird = useCallback(
-    (medicationId: string, colors: { bodyColor: string; wingColor: string; bellyColor: string; beakColor: string; eyeColor: string }, cost: number): boolean => {
+  const recolourBird = useCallback(
+    (medicationId: string, colours: { bodyColour: string; wingColour: string; bellyColour: string; beakColour: string; eyeColour: string }, cost: number): boolean => {
       if (state.coins < cost) return false;
       const med = state.medications.find(m => m.id === medicationId);
       if (!med) return false;
       dispatch({ type: 'SPEND_COINS', payload: cost });
       dispatch({
         type: 'UPDATE_MED',
-        payload: { ...med, birdTraits: { ...med.birdTraits, ...colors } },
+        payload: { ...med, birdTraits: { ...med.birdTraits, ...colours } },
       });
       return true;
     },
@@ -468,7 +468,7 @@ export function AppProvider({ children }: { children: React.ReactNode }) {
         toggleRoomDecoration,
         buyHomeItem,
         renameBird,
-        recolorBird,
+        recolourBird,
         reorderMedications,
         setRepeatSettings,
         markRepeatRequested,

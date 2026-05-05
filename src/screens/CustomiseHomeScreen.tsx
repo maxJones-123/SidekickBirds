@@ -14,7 +14,7 @@ import {
   getBackgroundById, getDecorationById,
 } from '../constants/homeItems';
 
-type Props = NativeStackScreenProps<RootStackParamList, 'CustomizeHome'>;
+type Props = NativeStackScreenProps<RootStackParamList, 'CustomiseHome'>;
 
 const SCREEN_WIDTH = Dimensions.get('window').width;
 
@@ -27,7 +27,7 @@ const DECO_POSITIONS = [
   { top: '40%' as const, right: 10 },
 ] as const;
 
-export default function CustomizeHomeScreen({ route, navigation }: Props) {
+export default function CustomiseHomeScreen({ route, navigation }: Props) {
   const { medicationId } = route.params;
   const { state, setRoomBackground, toggleRoomDecoration, buyHomeItem } = useApp();
 
@@ -104,8 +104,8 @@ export default function CustomizeHomeScreen({ route, navigation }: Props) {
     <SafeAreaView style={styles.safe} edges={['bottom']}>
       <ScrollView contentContainerStyle={styles.scroll} showsVerticalScrollIndicator={false}>
         {/* Live room preview */}
-        <View style={[styles.room, { backgroundColor: currentBg.wallColor }]}>
-          <View style={[styles.floor, { backgroundColor: currentBg.floorColor }]} />
+        <View style={[styles.room, { backgroundColor: currentBg.wallColour }]}>
+          <View style={[styles.floor, { backgroundColor: currentBg.floorColour }]} />
 
           {/* Decorations */}
           {currentDecos.slice(0, 6).map((id, i) => {
@@ -169,13 +169,13 @@ export default function CustomizeHomeScreen({ route, navigation }: Props) {
                   key={bg.id}
                   style={[
                     styles.bgCard,
-                    { backgroundColor: bg.wallColor },
+                    { backgroundColor: bg.wallColour },
                     selected && styles.cardSelected,
                   ]}
                   onPress={() => handleSelectBackground(bg.id, bg.cost)}
                   activeOpacity={0.8}
                 >
-                  <View style={[styles.bgFloorPreview, { backgroundColor: bg.floorColor }]} />
+                  <View style={[styles.bgFloorPreview, { backgroundColor: bg.floorColour }]} />
                   <Text style={styles.bgEmoji}>{bg.emoji}</Text>
                   <Text style={styles.bgName}>{bg.name}</Text>
                   {!unlocked && (

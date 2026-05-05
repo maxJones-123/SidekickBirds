@@ -90,10 +90,10 @@ function getRepeatStatus(med: Medication): {
 
 function PillCountBar({ count, max }: { count: number; max: number }) {
   const pct = Math.min((count / max) * 100, 100);
-  const color = count <= LOW_THRESHOLD ? '#F44336' : count <= 14 ? '#FF9800' : '#4CAF50';
+  const colour = count <= LOW_THRESHOLD ? '#F44336' : count <= 14 ? '#FF9800' : '#4CAF50';
   return (
     <View style={styles.barTrack}>
-      <View style={[styles.barFill, { width: `${pct}%`, backgroundColor: color }]} />
+      <View style={[styles.barFill, { width: `${pct}%`, backgroundColor: colour }]} />
     </View>
   );
 }
@@ -343,13 +343,13 @@ interface RepeatCardProps {
 function RepeatCard({ med, onRequest, onSettings }: RepeatCardProps) {
   const { label, sublabel, urgency, nextDueMs } = getRepeatStatus(med);
 
-  const urgencyColors = {
+  const urgencyColours = {
     ok:       { bg: '#F1FBF1', border: '#A5D6A7', dot: '#4CAF50' },
     soon:     { bg: '#FFF8E1', border: '#FFE082', dot: '#FF9800' },
     due:      { bg: '#FFF3E0', border: '#FFCC80', dot: '#FF9800' },
     overdue:  { bg: '#FFEBEE', border: '#EF9A9A', dot: '#F44336' },
   };
-  const c = urgencyColors[urgency];
+  const c = urgencyColours[urgency];
 
   return (
     <View style={[styles.repeatCard, { backgroundColor: c.bg, borderColor: c.border }]}>

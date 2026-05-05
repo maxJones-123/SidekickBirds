@@ -1,8 +1,8 @@
 export interface RoomBackground {
   id: string;
   name: string;
-  wallColor: string;
-  floorColor: string;
+  wallColour: string;
+  floorColour: string;
   cost: number;
   emoji: string;
 }
@@ -15,14 +15,14 @@ export interface RoomDecoration {
 }
 
 export const ROOM_BACKGROUNDS: RoomBackground[] = [
-  { id: 'default',  name: 'Cozy Cottage',   wallColor: '#FFF8EE', floorColor: '#F5E6D0', cost: 0,   emoji: '🏡' },
-  { id: 'ocean',    name: 'Ocean View',      wallColor: '#E3F2FD', floorColor: '#BBDEFB', cost: 50,  emoji: '🌊' },
-  { id: 'garden',   name: 'Garden',          wallColor: '#E8F5E9', floorColor: '#C8E6C9', cost: 50,  emoji: '🌿' },
-  { id: 'sunset',   name: 'Sunset',          wallColor: '#FFF3E0', floorColor: '#FFE0B2', cost: 80,  emoji: '🌅' },
-  { id: 'night',    name: 'Night Sky',       wallColor: '#E8EAF6', floorColor: '#C5CAE9', cost: 100, emoji: '🌙' },
-  { id: 'candy',    name: 'Candy Land',      wallColor: '#FCE4EC', floorColor: '#F8BBD0', cost: 80,  emoji: '🍭' },
-  { id: 'forest',   name: 'Forest Cabin',    wallColor: '#F1F8E9', floorColor: '#DCEDC8', cost: 70,  emoji: '🌲' },
-  { id: 'royal',    name: 'Royal Chamber',   wallColor: '#EDE7F6', floorColor: '#D1C4E9', cost: 120, emoji: '👑' },
+  { id: 'default',  name: 'Cozy Cottage',   wallColour: '#FFF8EE', floorColour: '#F5E6D0', cost: 0,   emoji: '🏡' },
+  { id: 'ocean',    name: 'Ocean View',      wallColour: '#E3F2FD', floorColour: '#BBDEFB', cost: 50,  emoji: '🌊' },
+  { id: 'garden',   name: 'Garden',          wallColour: '#E8F5E9', floorColour: '#C8E6C9', cost: 50,  emoji: '🌿' },
+  { id: 'sunset',   name: 'Sunset',          wallColour: '#FFF3E0', floorColour: '#FFE0B2', cost: 80,  emoji: '🌅' },
+  { id: 'night',    name: 'Night Sky',       wallColour: '#E8EAF6', floorColour: '#C5CAE9', cost: 100, emoji: '🌙' },
+  { id: 'candy',    name: 'Candy Land',      wallColour: '#FCE4EC', floorColour: '#F8BBD0', cost: 80,  emoji: '🍭' },
+  { id: 'forest',   name: 'Forest Cabin',    wallColour: '#F1F8E9', floorColour: '#DCEDC8', cost: 70,  emoji: '🌲' },
+  { id: 'royal',    name: 'Royal Chamber',   wallColour: '#EDE7F6', floorColour: '#D1C4E9', cost: 120, emoji: '👑' },
 ];
 
 export const ROOM_DECORATIONS: RoomDecoration[] = [

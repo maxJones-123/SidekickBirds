@@ -54,11 +54,11 @@ export function generateBird(seed: string): BirdTraits {
   const rand = seededRandom(seed);
 
   return {
-    bodyColor: pick(BODY_COLORS, rand),
-    bellyColor: pick(BELLY_COLORS, rand),
-    wingColor: pick(WING_COLORS, rand),
-    beakColor: pick(BEAK_COLORS, rand),
-    eyeColor: pick(EYE_COLORS, rand),
+    bodyColour: pick(BODY_COLORS, rand),
+    bellyColour: pick(BELLY_COLORS, rand),
+    wingColour: pick(WING_COLORS, rand),
+    beakColour: pick(BEAK_COLORS, rand),
+    eyeColour: pick(EYE_COLORS, rand),
     bodyShape: pick<BodyShape>(['round', 'round', 'tall', 'chubby'], rand),
     crestStyle: pick<CrestStyle>(['none', 'none', 'none', 'small', 'small', 'large', 'curl'], rand),
     tailStyle: pick<TailStyle>(['short', 'short', 'long', 'fan', 'forked'], rand),
