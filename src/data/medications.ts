@@ -46,6 +46,8 @@ EAN,Name,Dose,Form
 5021265248957,Vitamin B12,1000mcg,Tablet
 5000436001213,Folic Acid,400mcg,Tablet
 5000436000247,Iron,14mg,Tablet
+# ── Children's Medicines ─────────────────────────────────────────────────────
+3574661148076,Calpol,120mg/5ml,Suspension
 # ── Add your medications below ───────────────────────────────────────────────
 
 `;
