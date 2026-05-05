@@ -1,33 +1,3 @@
 EAN,Name,Dose,Form
-# Paracetamol
 5000158070553,Paracetamol,500mg,Tablet
-5000158122536,Paracetamol,500mg,Tablet
-5000158124899,Paracetamol,1000mg,Tablet
-5000158174313,Paracetamol,500mg,Capsule
-# Ibuprofen
-5000158074919,Ibuprofen,200mg,Tablet
-5000158075084,Ibuprofen,400mg,Tablet
-5000158170353,Ibuprofen,400mg,Tablet
-5000158121836,Ibuprofen,200mg,Tablet
-# Aspirin
-5000158070584,Aspirin,75mg,Tablet
-5000158014168,Aspirin,300mg,Tablet
-# Antihistamines
-5000158060516,Cetirizine,10mg,Tablet
-5000158032773,Loratadine,10mg,Tablet
-5000158124448,Chlorphenamine,4mg,Tablet
-# Omeprazole / Antacids
-5000158147287,Omeprazole,20mg,Capsule
-5000158147294,Omeprazole,10mg,Capsule
-5000158079877,Gaviscon,,Liquid
-# Codeine
-5000158070591,Co-codamol,8/500mg,Tablet
-# Vitamins & Supplements
-5000436000124,Vitamin D,10mcg,Tablet
-5000436000131,Vitamin D,25mcg,Tablet
-5021265248957,Vitamin B12,1000mcg,Tablet
-5000436001213,Folic Acid,400mcg,Tablet
-5000436000247,Iron,14mg,Tablet
-# Children's Medicines
-3574661148076,Calpol,120mg/5ml,Suspension
-# Add your medications below
+5000158170353,Ibuprofen,200mg,Tablet

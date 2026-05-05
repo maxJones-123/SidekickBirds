@@ -84,6 +84,7 @@ export async function loadMedicationDatabase(): Promise<void> {
   if (loaded) return;
 
   try {
+    // eslint-disable-next-line @typescript-eslint/no-var-requires
     const asset = Asset.fromModule(require('../../assets/medications.csv'));
     await asset.downloadAsync();
 
@@ -98,7 +99,14 @@ export async function loadMedicationDatabase(): Promise<void> {
     const invalid = db.size - valid;
     console.log(`[MedicationDB] Loaded ${db.size} entries (${valid} valid, ${invalid} invalid EAN-13)`);
   } catch (err) {
-    console.error('[MedicationDB] Failed to load medications.csv:', err);
+    // Most common cause: Metro cache not cleared after adding metro.config.js.
+    // Fix: stop the server and run  npx expo start --clear
+    console.error(
+      '[MedicationDB] Failed to load medications.csv.\n' +
+      'If this is the first run after setup, restart Metro with:\n' +
+      '  npx expo start --clear\n',
+      err
+    );
   }
 }
 
