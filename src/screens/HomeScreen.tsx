@@ -1,4 +1,4 @@
-import React, { useCallback, useEffect } from 'react';
+import React, { useCallback } from 'react';
 import {
   View,
   Text,
@@ -16,7 +16,6 @@ import { useApp } from '../context/AppContext';
 import { getDoseStatus, formatTime, getTodayString } from '../utils/medicationUtils';
 import { getLevel, getLevelXp, XP_PER_LEVEL } from '../utils/levelUtils';
 import BirdSvg from '../components/BirdSvg';
-import { printMedicationDatabase } from '../data/medications';
 
 type Nav = NativeStackNavigationProp<RootStackParamList>;
 
@@ -172,10 +171,7 @@ export default function HomeScreen() {
   const navigation = useNavigation<Nav>();
   const { state, takeDose, skipDose } = useApp();
 
-  // DEV: print medication database on first load — remove when done validating
-  useEffect(() => { printMedicationDatabase(); }, []);
-
-  const level = getLevel(state.totalXp);
+const level = getLevel(state.totalXp);
   const levelXp = getLevelXp(state.totalXp);
   const xpProgress = levelXp / XP_PER_LEVEL;
 

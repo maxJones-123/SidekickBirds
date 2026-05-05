@@ -1,90 +1,43 @@
 /**
  * UK Medication Database
  * ──────────────────────────────────────────────────────────────────────────────
- * Edit the CSV rows below — one medication per line.
- * Columns: EAN barcode, Name, Dose, Form
+ * Edit medications in:  assets/medications.csv
  *
- * Tips:
- *  • EAN-13 barcodes are the 13-digit numbers on the outer packaging.
- *  • You can find EAN codes by scanning the box in any barcode reader app.
- *  • Dose and Form are optional — leave them blank if unknown.
- *  • Lines starting with # are ignored.
- *  • Call printMedicationDatabase() in a useEffect to see all loaded entries.
- *
- * Format:
- *   EAN,Name,Dose,Form
+ * CSV format:  EAN,Name,Dose,Form
+ * Rules:
+ *  • EAN must be a valid 13-digit EAN-13 barcode
+ *  • Lines starting with # are comments and are ignored
+ *  • Dose and Form are optional — leave blank if unknown
  */
 
-const CSV = `
-EAN,Name,Dose,Form
-# ── Paracetamol ──────────────────────────────────────────────────────────────
-5000158070553,Paracetamol,500mg,Tablet
-5000158122536,Paracetamol,500mg,Tablet
-5000158124899,Paracetamol,1000mg,Tablet
-5000158174313,Paracetamol,500mg,Capsule
-# ── Ibuprofen ─────────────────────────────────────────────────────────────────
-5000158074919,Ibuprofen,200mg,Tablet
-5000158075084,Ibuprofen,400mg,Tablet
-5000158170353,Ibuprofen,400mg,Tablet
-5000158121836,Ibuprofen,200mg,Tablet
-# ── Aspirin ───────────────────────────────────────────────────────────────────
-5000158070584,Aspirin,75mg,Tablet
-5000158014168,Aspirin,300mg,Tablet
-# ── Antihistamines ───────────────────────────────────────────────────────────
-5000158060516,Cetirizine,10mg,Tablet
-5000158032773,Loratadine,10mg,Tablet
-5000158124448,Chlorphenamine,4mg,Tablet
-# ── Omeprazole / Antacids ─────────────────────────────────────────────────────
-5000158147287,Omeprazole,20mg,Capsule
-5000158147294,Omeprazole,10mg,Capsule
-5000158079877,Gaviscon,,Liquid
-# ── Codeine ───────────────────────────────────────────────────────────────────
-5000158070591,Co-codamol,8/500mg,Tablet
-# ── Vitamins & Supplements ───────────────────────────────────────────────────
-5000436000124,Vitamin D,10mcg,Tablet
-5000436000131,Vitamin D,25mcg,Tablet
-5021265248957,Vitamin B12,1000mcg,Tablet
-5000436001213,Folic Acid,400mcg,Tablet
-5000436000247,Iron,14mg,Tablet
-# ── Children's Medicines ─────────────────────────────────────────────────────
-3574661148076,Calpol,120mg/5ml,Suspension
-# ── Add your medications below ───────────────────────────────────────────────
+import { Asset } from 'expo-asset';
+import * as FileSystem from 'expo-file-system';
 
-`;
+// ── Types ─────────────────────────────────────────────────────────────────────
+
+export interface MedEntry {
+  ean: string;
+  name: string;
+  dose: string;
+  form: string;
+  valid: boolean;
+}
 
 // ── EAN-13 validation ─────────────────────────────────────────────────────────
 
-/**
- * Validates an EAN-13 barcode using the standard GS1 checksum algorithm.
- * Returns true if the code is exactly 13 digits and the check digit is correct.
- */
 export function isValidEAN13(code: string): boolean {
   if (!/^\d{13}$/.test(code)) return false;
-
   const digits = code.split('').map(Number);
-  const checkDigit = digits[12];
-
-  // Alternate multiply by 1 and 3 for first 12 digits
   let sum = 0;
   for (let i = 0; i < 12; i++) {
     sum += digits[i] * (i % 2 === 0 ? 1 : 3);
   }
-
-  const expected = (10 - (sum % 10)) % 10;
-  return expected === checkDigit;
+  return (10 - (sum % 10)) % 10 === digits[12];
 }
 
-// ── Parse once at module load ─────────────────────────────────────────────────
+// ── CSV parser ────────────────────────────────────────────────────────────────
 
-export interface MedEntry {
-  name: string;
-  dose: string;
-  form: string;
-  ean: string;
-  valid: boolean;
-}
-
-function buildDatabase(csv: string): Map<string, MedEntry> {
+function parseCSV(csv: string): Map<string, MedEntry> {
   const map = new Map<string, MedEntry>();
   let lineNumber = 0;
 
@@ -104,7 +57,6 @@ function buildDatabase(csv: string): Map<string, MedEntry> {
     if (!ean || !name) continue;
 
     const valid = isValidEAN13(ean);
-
     if (!valid) {
       console.warn(
         `[MedicationDB] ⚠️  Invalid EAN-13 on line ${lineNumber}: "${ean}" (${name})` +
@@ -118,24 +70,56 @@ function buildDatabase(csv: string): Map<string, MedEntry> {
   return map;
 }
 
-export const MEDICATION_DB = buildDatabase(CSV);
+// ── Database state ────────────────────────────────────────────────────────────
+
+let db = new Map<string, MedEntry>();
+let loaded = false;
+
+/**
+ * Loads assets/medications.csv into memory.
+ * Call once at app startup (e.g. in App.tsx useEffect).
+ * Safe to call multiple times — only loads once.
+ */
+export async function loadMedicationDatabase(): Promise<void> {
+  if (loaded) return;
+
+  try {
+    const asset = Asset.fromModule(require('../../assets/medications.csv'));
+    await asset.downloadAsync();
+
+    const uri = asset.localUri;
+    if (!uri) throw new Error('Could not resolve local URI for medications.csv');
+
+    const csv = await FileSystem.readAsStringAsync(uri);
+    db = parseCSV(csv);
+    loaded = true;
+
+    const valid   = [...db.values()].filter(e => e.valid).length;
+    const invalid = db.size - valid;
+    console.log(`[MedicationDB] Loaded ${db.size} entries (${valid} valid, ${invalid} invalid EAN-13)`);
+  } catch (err) {
+    console.error('[MedicationDB] Failed to load medications.csv:', err);
+  }
+}
 
 // ── Public API ────────────────────────────────────────────────────────────────
 
-/** Look up a scanned barcode. Returns null if not in the local database. */
+/** Look up a scanned barcode. Returns null if not found or DB not yet loaded. */
 export function lookupLocal(barcode: string): MedEntry | null {
-  return MEDICATION_DB.get(barcode.trim()) ?? null;
+  return db.get(barcode.trim()) ?? null;
 }
 
 /**
- * Prints the full medication database to the console.
- * Call this from a useEffect during development to verify your entries.
- *
- * Example:
- *   useEffect(() => { printMedicationDatabase(); }, []);
+ * Prints the full database to the console.
+ * Useful during development to verify your EAN entries.
  */
 export function printMedicationDatabase(): void {
-  const entries = [...MEDICATION_DB.values()];
+  if (!loaded) {
+    console.warn('[MedicationDB] Database not loaded yet — call loadMedicationDatabase() first.');
+    return;
+  }
+
+  const entries = [...db.values()];
   const valid   = entries.filter(e => e.valid);
   const invalid = entries.filter(e => !e.valid);
 
@@ -147,7 +131,7 @@ export function printMedicationDatabase(): void {
   console.log('');
 
   if (invalid.length > 0) {
-    console.log('⚠️  INVALID EAN-13 CODES (checksum failed or wrong length):');
+    console.log('⚠️  INVALID EAN-13 CODES:');
     for (const e of invalid) {
       console.log(`   ✕  ${e.ean.padEnd(14)}  ${e.name}${e.dose ? ' ' + e.dose : ''}${e.form ? ' ' + e.form : ''}`);
     }
