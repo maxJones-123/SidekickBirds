@@ -9,6 +9,7 @@ const DEFAULT_STATE: AppState = {
   totalXp: 0,
   unlockedCosmetics: [],
   emergencyContacts: [],
+  userName: '',
 };
 
 function migrateMedication(m: Medication): Medication {

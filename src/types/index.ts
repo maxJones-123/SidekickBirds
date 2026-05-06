@@ -74,6 +74,7 @@ export interface AppState {
   totalXp: number;
   unlockedCosmetics: string[];
   emergencyContacts: EmergencyContact[];
+  userName: string;
 }
 
 export type RootStackParamList = {

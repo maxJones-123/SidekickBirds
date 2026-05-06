@@ -32,6 +32,7 @@ interface AppContextValue {
   setReorderAmount: (medicationId: string, amount: number) => void;
   setReorderReminder: (medicationId: string, dateMs: number | null) => void;
   confirmRestock: (medicationId: string) => void;
+  setUserName: (name: string) => void;
 }
 
 type Action =
@@ -50,7 +51,8 @@ type Action =
   | { type: 'UPDATE_CONTACT'; payload: EmergencyContact }
   | { type: 'SET_ROOM_BG'; payload: { medicationId: string; backgroundId: string } }
   | { type: 'TOGGLE_ROOM_DECO'; payload: { medicationId: string; decorationId: string } }
-  | { type: 'REORDER_MEDS'; payload: string[] };
+  | { type: 'REORDER_MEDS'; payload: string[] }
+  | { type: 'SET_USER_NAME'; payload: string };
 
 function reducer(state: AppState, action: Action): AppState {
   switch (action.type) {
@@ -142,6 +144,8 @@ function reducer(state: AppState, action: Action): AppState {
       const reordered = idOrder.map(id => medMap.get(id)).filter((m): m is typeof state.medications[0] => !!m);
       return { ...state, medications: reordered };
     }
+    case 'SET_USER_NAME':
+      return { ...state, userName: action.payload };
     default:
       return state;
   }
@@ -156,6 +160,7 @@ export function AppProvider({ children }: { children: React.ReactNode }) {
     totalXp: 0,
     unlockedCosmetics: [],
     emergencyContacts: [],
+    userName: '',
   });
   const [isLoading, setIsLoading] = React.useState(true);
 
@@ -475,6 +480,7 @@ export function AppProvider({ children }: { children: React.ReactNode }) {
         setReorderAmount,
         setReorderReminder,
         confirmRestock,
+        setUserName: useCallback((name: string) => dispatch({ type: 'SET_USER_NAME', payload: name.trim() }), []),
       }}
     >
       {children}

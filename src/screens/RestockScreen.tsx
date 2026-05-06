@@ -250,8 +250,10 @@ interface RepeatRequestModalProps {
 }
 
 function RepeatRequestModal({ visible, med, onMarkRequested, onClose }: RepeatRequestModalProps) {
+  const { state } = useApp();
+  const patientName = state.userName || '[Your name]';
   const prescriptionText =
-    `Repeat Prescription Request\n\nPatient name: [Your name]\nDate: ${new Date().toLocaleDateString('en-GB')}\n\nMedication:\n• ${med.name}${med.dose ? ` ${med.dose}` : ''}${med.form ? ` ${med.form}` : ''}\n  Frequency: ${med.frequency}\n\nPlease process my repeat prescription at your earliest convenience.\n\nThank you.`;
+    `Repeat Prescription Request\n\nPatient name: ${patientName}\nDate: ${new Date().toLocaleDateString('en-GB')}\n\nMedication:\n• ${med.name}${med.dose ? ` ${med.dose}` : ''}${med.form ? ` ${med.form}` : ''}\n  Frequency: ${med.frequency}\n\nPlease process my repeat prescription at your earliest convenience.\n\nThank you.`;
 
   const handleCall = useCallback(() => {
     if (!med.pharmacyPhone) return;

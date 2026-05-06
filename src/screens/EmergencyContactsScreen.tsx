@@ -74,11 +74,17 @@ function ContactForm({ initial, onSave, onCancel, title }: ContactFormProps) {
 }
 
 export default function EmergencyContactsScreen() {
-  const { state, addContact, removeContact, updateContact } = useApp();
+  const { state, addContact, removeContact, updateContact, setUserName } = useApp();
   const [showAdd, setShowAdd] = useState(false);
   const [editContact, setEditContact] = useState<EmergencyContact | null>(null);
+  const [nameInput, setNameInput] = useState(state.userName);
 
   const contacts = state.emergencyContacts ?? [];
+
+  const handleNameSave = useCallback(() => {
+    setUserName(nameInput);
+    Haptics.selectionAsync();
+  }, [nameInput, setUserName]);
 
   const handleAdd = useCallback(
     (name: string, phone: string) => {
@@ -128,6 +134,24 @@ export default function EmergencyContactsScreen() {
           <Text style={styles.infoBannerIcon}>🛡️</Text>
           <Text style={styles.infoBannerText}>
             If you miss a dose, we'll alert your contacts.
+          </Text>
+        </View>
+
+        {/* Your name */}
+        <Text style={styles.sectionLabel}>YOUR NAME</Text>
+        <View style={styles.nameCard}>
+          <TextInput
+            style={styles.nameInput}
+            value={nameInput}
+            onChangeText={setNameInput}
+            placeholder="e.g. Jane Smith"
+            placeholderTextColor="#B0BEC5"
+            returnKeyType="done"
+            onSubmitEditing={handleNameSave}
+            onBlur={handleNameSave}
+          />
+          <Text style={styles.nameHint}>
+            Used in repeat prescription requests. Stored only on this device.
           </Text>
         </View>
 
@@ -367,6 +391,24 @@ const styles = StyleSheet.create({
     fontSize: 15,
     fontWeight: '700',
     color: '#00BCD4',
+  },
+  nameCard: {
+    backgroundColor: '#FFFFFF',
+    borderRadius: 14,
+    borderWidth: 1,
+    borderColor: '#E8EFF3',
+    padding: 14,
+    marginBottom: 24,
+  },
+  nameInput: {
+    fontSize: 15,
+    color: '#1A2B3C',
+    fontWeight: '500',
+  },
+  nameHint: {
+    fontSize: 11,
+    color: '#B0BEC5',
+    marginTop: 8,
   },
   footer: {
     textAlign: 'center',
