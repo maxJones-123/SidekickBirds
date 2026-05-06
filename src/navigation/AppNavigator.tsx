@@ -82,6 +82,7 @@ export default function AppNavigator() {
           headerTintColor: '#1A2B3C',
           headerTitleStyle: { fontWeight: '700' },
           contentStyle: { backgroundColor: '#F5F9FA' },
+          headerBackTitle: 'Back',
         }}
       >
         <Stack.Screen name="MainTabs" component={MainTabs} options={{ headerShown: false }} />
@@ -123,7 +124,7 @@ export default function AppNavigator() {
         <Stack.Screen
           name="CustomiseHome"
           component={CustomiseHomeScreen}
-          options={{ title: 'Customize Home' }}
+          options={{ title: 'Customise Home' }}
         />
         <Stack.Screen
           name="ManageMedications"
