@@ -42,12 +42,14 @@ export default function AddMedicationScreen({ navigation }: Props) {
   const [timePickerInitial, setTimePickerInitial] = useState('08:00');
   const [timePickerTitle, setTimePickerTitle] = useState('Add Time');
   const [showScanner, setShowScanner] = useState(false);
+  const [scannedBirdName, setScannedBirdName] = useState<string | undefined>(undefined);
   const editingTimeIndex = useRef<number | null>(null);
 
   const handleScanned = useCallback((info: ScannedMedInfo) => {
     if (info.name) setName(info.name);
     const parts = [info.dose, info.form].filter(Boolean).join(' ');
     if (parts) setDoseForm(parts);
+    setScannedBirdName(info.funnyBirdName);
     Haptics.notificationAsync(Haptics.NotificationFeedbackType.Success);
   }, []);
 
@@ -98,9 +100,9 @@ export default function AddMedicationScreen({ navigation }: Props) {
     const parts = doseForm.trim().split(' ');
     const dose = parts[0] ?? '';
     const form = parts.slice(1).join(' ');
-    addMedication(trimName, dose, form, frequency, selectedTimes);
+    addMedication(trimName, dose, form, frequency, selectedTimes, scannedBirdName);
     navigation.goBack();
-  }, [name, doseForm, frequency, selectedTimes, addMedication, navigation]);
+  }, [name, doseForm, frequency, selectedTimes, scannedBirdName, addMedication, navigation]);
 
   const isValid = name.trim().length > 0 && selectedTimes.length > 0;
 

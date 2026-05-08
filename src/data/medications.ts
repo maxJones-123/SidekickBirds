@@ -3,11 +3,14 @@
  * ──────────────────────────────────────────────────────────────────────────────
  * Edit medications in:  assets/medications.csv
  *
- * CSV format:  EAN,Name,Dose,Form
+ * CSV format (columns in this order):
+ *   Medication Name, Dosage, Form, EAN-13 Barcode, Common Use, Funny Bird Name
+ *
  * Rules:
  *  • EAN must be a valid 13-digit EAN-13 barcode
- *  • Lines starting with # are comments and are ignored
- *  • Dose and Form are optional — leave blank if unknown
+ *  • Wrap fields containing commas in double quotes
+ *  • Lines starting with # are ignored
+ *  • The header row (Medication Name,...) is ignored automatically
  */
 
 import { Asset } from 'expo-asset';
@@ -20,6 +23,8 @@ export interface MedEntry {
   name: string;
   dose: string;
   form: string;
+  commonUse: string;
+  funnyBirdName: string;
   valid: boolean;
 }
 
@@ -37,6 +42,32 @@ export function isValidEAN13(code: string): boolean {
 
 // ── CSV parser ────────────────────────────────────────────────────────────────
 
+/** Splits a single CSV line respecting double-quoted fields. */
+function splitCSVLine(line: string): string[] {
+  const fields: string[] = [];
+  let current = '';
+  let inQuotes = false;
+
+  for (let i = 0; i < line.length; i++) {
+    const ch = line[i];
+    if (ch === '"') {
+      inQuotes = !inQuotes;
+    } else if (ch === ',' && !inQuotes) {
+      fields.push(current.trim());
+      current = '';
+    } else {
+      current += ch;
+    }
+  }
+  fields.push(current.trim());
+  return fields;
+}
+
+/** Normalise non-breaking hyphens (U+2011) and similar to a plain hyphen. */
+function normalise(s: string): string {
+  return s.replace(/[‑‒–—]/g, '-').trim();
+}
+
 function parseCSV(csv: string): Map<string, MedEntry> {
   const map = new Map<string, MedEntry>();
   let lineNumber = 0;
@@ -44,15 +75,21 @@ function parseCSV(csv: string): Map<string, MedEntry> {
   for (const rawLine of csv.split('\n')) {
     lineNumber++;
     const line = rawLine.trim();
-    if (!line || line.startsWith('#') || line.toUpperCase().startsWith('EAN')) continue;
 
-    const parts = line.split(',');
-    if (parts.length < 2) continue;
+    // Skip blank lines, comments, and the header row
+    if (!line || line.startsWith('#')) continue;
+    const lower = line.toLowerCase();
+    if (lower.startsWith('medication name') || lower.startsWith('ean')) continue;
 
-    const ean  = parts[0].trim();
-    const name = parts[1]?.trim() ?? '';
-    const dose = parts[2]?.trim() ?? '';
-    const form = parts[3]?.trim() ?? '';
+    const parts = splitCSVLine(line);
+
+    // Expected columns: Name, Dosage, Form, EAN, Common Use, Funny Bird Name
+    const name          = normalise(parts[0] ?? '');
+    const dose          = normalise(parts[1] ?? '');
+    const form          = normalise(parts[2] ?? '');
+    const ean           = normalise(parts[3] ?? '').replace(/\s/g, '');
+    const commonUse     = normalise(parts[4] ?? '');
+    const funnyBirdName = normalise(parts[5] ?? '');
 
     if (!ean || !name) continue;
 
@@ -64,7 +101,7 @@ function parseCSV(csv: string): Map<string, MedEntry> {
       );
     }
 
-    map.set(ean, { ean, name, dose, form, valid });
+    map.set(ean, { ean, name, dose, form, commonUse, funnyBirdName, valid });
   }
 
   return map;
@@ -77,8 +114,7 @@ let loaded = false;
 
 /**
  * Loads assets/medications.csv into memory.
- * Call once at app startup (e.g. in App.tsx useEffect).
- * Safe to call multiple times — only loads once.
+ * Call once at app startup (already wired up in App.tsx).
  */
 export async function loadMedicationDatabase(): Promise<void> {
   if (loaded) return;
@@ -99,8 +135,6 @@ export async function loadMedicationDatabase(): Promise<void> {
     const invalid = db.size - valid;
     console.log(`[MedicationDB] Loaded ${db.size} entries (${valid} valid, ${invalid} invalid EAN-13)`);
   } catch (err) {
-    // Most common cause: Metro cache not cleared after adding metro.config.js.
-    // Fix: stop the server and run  npx expo start --clear
     console.error(
       '[MedicationDB] Failed to load medications.csv.\n' +
       'If this is the first run after setup, restart Metro with:\n' +
@@ -117,13 +151,10 @@ export function lookupLocal(barcode: string): MedEntry | null {
   return db.get(barcode.trim()) ?? null;
 }
 
-/**
- * Prints the full database to the console.
- * Useful during development to verify your EAN entries.
- */
+/** Print the full database to the console (development use). */
 export function printMedicationDatabase(): void {
   if (!loaded) {
-    console.warn('[MedicationDB] Database not loaded yet — call loadMedicationDatabase() first.');
+    console.warn('[MedicationDB] Not loaded yet — call loadMedicationDatabase() first.');
     return;
   }
 
@@ -141,7 +172,7 @@ export function printMedicationDatabase(): void {
   if (invalid.length > 0) {
     console.log('⚠️  INVALID EAN-13 CODES:');
     for (const e of invalid) {
-      console.log(`   ✕  ${e.ean.padEnd(14)}  ${e.name}${e.dose ? ' ' + e.dose : ''}${e.form ? ' ' + e.form : ''}`);
+      console.log(`   ✕  ${e.ean.padEnd(14)}  ${e.name}${e.dose ? ' ' + e.dose : ''}`);
     }
     console.log('');
   }
@@ -149,7 +180,7 @@ export function printMedicationDatabase(): void {
   console.log('✅ VALID ENTRIES:');
   for (const e of valid) {
     const label = [e.name, e.dose, e.form].filter(Boolean).join(' ');
-    console.log(`   ${e.ean}  ${label}`);
+    console.log(`   ${e.ean}  ${label}${e.funnyBirdName ? '  🐦 ' + e.funnyBirdName : ''}`);
   }
   console.log('');
 }

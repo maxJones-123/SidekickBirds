@@ -15,6 +15,8 @@ export interface ScannedMedInfo {
   name: string;
   dose: string;
   form: string;
+  funnyBirdName?: string;
+  commonUse?: string;
 }
 
 interface Props {
@@ -97,7 +99,13 @@ export default function BarcodeScannerModal({ visible, onClose, onScanned }: Pro
       const local = lookupLocal(code);
       if (local) {
         setLoading(false);
-        onScanned(local);
+        onScanned({
+          name: local.name,
+          dose: local.dose,
+          form: local.form,
+          funnyBirdName: local.funnyBirdName || undefined,
+          commonUse: local.commonUse || undefined,
+        });
         onClose();
         return;
       }

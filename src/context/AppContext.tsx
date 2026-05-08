@@ -8,7 +8,7 @@ import { syncNotifications, cancelMedicationNotifications } from '../utils/notif
 interface AppContextValue {
   state: AppState;
   isLoading: boolean;
-  addMedication: (name: string, dose: string, form: string, frequency: Frequency, times: string[]) => void;
+  addMedication: (name: string, dose: string, form: string, frequency: Frequency, times: string[], birdName?: string) => void;
   deleteMedication: (id: string) => void;
   takeDose: (medicationId: string, timeKey: string) => { coinsEarned: number; xpEarned: number; newStreak: number };
   skipDose: (medicationId: string, timeKey: string) => void;
@@ -185,8 +185,9 @@ export function AppProvider({ children }: { children: React.ReactNode }) {
   }, [state.medications, isLoading]);
 
   const addMedication = useCallback(
-    (name: string, dose: string, form: string, frequency: Frequency, times: string[]) => {
+    (name: string, dose: string, form: string, frequency: Frequency, times: string[], birdName?: string) => {
       const id = `med_${Date.now()}_${Math.random().toString(36).slice(2)}`;
+      const generatedBird = generateBird(id);
       const med: Medication = {
         id,
         name,
@@ -194,7 +195,7 @@ export function AppProvider({ children }: { children: React.ReactNode }) {
         form,
         frequency,
         scheduledTimes: times,
-        birdTraits: generateBird(id),
+        birdTraits: birdName ? { ...generatedBird, name: birdName } : generatedBird,
         equippedHat: null,
         equippedAccessory: null,
         health: 100,
@@ -451,6 +452,10 @@ export function AppProvider({ children }: { children: React.ReactNode }) {
     [state.coins, state.unlockedCosmetics]
   );
 
+  const setUserName = useCallback((name: string) => {
+    dispatch({ type: 'SET_USER_NAME', payload: name.trim() });
+  }, []);
+
   return (
     <AppContext.Provider
       value={{
@@ -480,7 +485,7 @@ export function AppProvider({ children }: { children: React.ReactNode }) {
         setReorderAmount,
         setReorderReminder,
         confirmRestock,
-        setUserName: useCallback((name: string) => dispatch({ type: 'SET_USER_NAME', payload: name.trim() }), []),
+        setUserName,
       }}
     >
       {children}
