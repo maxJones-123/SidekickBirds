@@ -87,7 +87,7 @@ function parseCSV(csv: string): Map<string, MedEntry> {
     const name          = normalise(parts[0] ?? '');
     const dose          = normalise(parts[1] ?? '');
     const form          = normalise(parts[2] ?? '');
-    const ean           = normalise(parts[3] ?? '').replace(/\s/g, '');
+    const ean           = (parts[3] ?? '').replace(/[^\d]/g, '');
     const commonUse     = normalise(parts[4] ?? '');
     const funnyBirdName = normalise(parts[5] ?? '');
 
@@ -148,7 +148,7 @@ export async function loadMedicationDatabase(): Promise<void> {
 
 /** Look up a scanned barcode. Returns null if not found or DB not yet loaded. */
 export function lookupLocal(barcode: string): MedEntry | null {
-  return db.get(barcode.trim()) ?? null;
+  return db.get(barcode.replace(/[^\d]/g, '')) ?? null;
 }
 
 /** Print the full database to the console (development use). */
